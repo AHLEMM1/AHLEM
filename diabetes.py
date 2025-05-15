@@ -1,5 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.metrics import accuracy_score, classification_repor
 #le chergement des données
 diabetes=pd.read_csv('diabetes.csv')
 print(diabetes)
@@ -59,6 +62,59 @@ print(diabetes.isnull().sum())
 #########Exploration des distributions des données)######v####
 print(diabetes['Insulin'].hist())
 print(diabetes['Glucose'].plot.kde())
+############# Définir les variables explicatives (X) et la variable cible (y)
+X = diabetes.drop('Outcome', axis=1)
+y = diabetes['Outcome']
+
+# Diviser les données en ensemble d'entraînement et de test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Créer et entraîner le modèle d'arbre de décision
+tree_model = DecisionTreeClassifier(max_depth=4, random_state=42)
+tree_model.fit(X_train, y_train)
+
+# Prédictions
+y_pred = tree_model.predict(X_test)
+
+# Évaluation du modèle
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print("Classification Report:\n", classification_report(y_test, y_pred))
+
+# Visualisation de l'arbre de décision
+plt.figure(figsize=(20,10))
+plot_tree(tree_model, feature_names=X.columns, class_names=["Non Diabetic", "Diabetic"], filled=True, rounded=True)
+plt.title("Arbre de décision pour la prédiction du diabète")
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
